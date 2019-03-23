@@ -1,2 +1,0 @@
-# exercism
-Ruby Challenge
