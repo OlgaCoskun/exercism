@@ -1,0 +1,5 @@
+Team                           | MP |  W |  D |  L |  P
+Allegoric Alaskans             |  1 |  1 |  0 |  0 |  3
+Blithering Badgers             |  1 |  0 |  0 |  1 |  0
+Courageous Californians        |  0 |  0 |  0 |  0 |  0
+Devastating Donkeys            |  0 |  0 |  0 |  0 |  0
