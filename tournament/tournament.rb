@@ -19,39 +19,16 @@ class Team
     wins + draws + loses
   end
 
-  def get_win
+  def win!
     self.wins += 1
   end
 
-  def get_loss
+  def loss!
     self.loses += 1
   end
 
-  def get_draw
+  def draw!
     self.draws += 1
-  end
-end
-
-class Match
-
-  attr_reader :team1, :team2, :result
-
-  def initialize(team1, team2, result)
-    @team1 = team1
-    @team2 = team2
-    @result = result
-
-    case result
-    when 'win'
-      team1.get_win
-      team2.get_loss
-    when 'loss'
-      team1.get_loss
-      team2.get_win
-    when 'draw'
-      team1.get_draw
-      team2.get_draw
-    end
   end
 end
 
@@ -59,31 +36,57 @@ class Tournament
 
   HEADER = ['Team'.ljust(31) + '| MP |  W |  D |  L |  P' + "\n"].freeze
 
-  attr_reader :matches
-
-  def self.tally(input)
-    @teams = []
-    matches = []
-    scores = []
-
-    input.split("\n").map {|e| e.split(";")}.each do |match|
-      team1 = get_team(match[0])
-      team2 = get_team(match[1])
-      matches << Match.new(team1, team2, match[2])
+  def initialize(input)
+    @teams = Hash.new { |h, k| h[k] = Team.new(k) }
+    @scores = []
+    input.split("\n").map {|e| e.split(";")}.each do |team1_name, team2_name, match_result|
+      team1 = get_team(team1_name)
+      team2 = get_team(team2_name)
+      Tournament.match(team1, team2, match_result)
     end
+  end
 
-    @teams.sort { |a,b| [b.points, a.name] <=> [a.points, b.name]}.each do |t|
+  def self.match(team1, team2, result)
+    @team1 = team1
+    @team2 = team2
+    @result = result
+
+    case result
+    when 'win'
+      team1.win!
+      team2.loss!
+    when 'loss'
+      team1.loss!
+      team2.win!
+    when 'draw'
+      [team1, team2].map(&:draw!)
+    end
+  end
+
+  def get_team(team_name)
+    @teams[team_name]
+  end
+
+  def sorted_result
+    sorted_teams.map do |t|
       scores << "%-31s|%3d |%3d |%3d |%3d |%3d\n" % [t.name, t.matches, t.wins, t.draws, t.loses, t.points]
     end
-    result = HEADER + scores
-    result.join
+    scores
   end
 
-  def self.get_team(team_name)
-    team = @teams.find { |e| e.name == team_name }
-    return team unless team.nil?
-    team = Team.new(team_name)
-    @teams << team
-    team
+  def sorted_teams
+    @teams.values.sort {|a, b| [b.points, a.name] <=> [a.points, b.name]}
   end
+
+  def report
+    (HEADER + sorted_result).join
+  end
+
+  def self.tally(input)
+    new(input).report
+  end
+
+  protected
+
+  attr_reader :matches, :scores
 end
