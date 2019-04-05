@@ -38,7 +38,6 @@ class Tournament
 
   def initialize(input)
     @teams = Hash.new { |h, k| h[k] = Team.new(k) }
-    @scores = []
     input.split("\n").map {|e| e.split(";")}.each do |team1_name, team2_name, match_result|
       team1 = get_team(team1_name)
       team2 = get_team(team2_name)
@@ -68,10 +67,7 @@ class Tournament
   end
 
   def sorted_result
-    sorted_teams.map do |t|
-      scores << "%-31s|%3d |%3d |%3d |%3d |%3d\n" % [t.name, t.matches, t.wins, t.draws, t.loses, t.points]
-    end
-    scores
+    sorted_teams.map { |t| "%-31s|%3d |%3d |%3d |%3d |%3d\n" % [t.name, t.matches, t.wins, t.draws, t.loses, t.points] }
   end
 
   def sorted_teams
@@ -87,6 +83,5 @@ class Tournament
   end
 
   protected
-
   attr_reader :matches, :scores
 end
