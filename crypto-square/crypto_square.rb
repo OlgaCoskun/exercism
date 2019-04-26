@@ -6,17 +6,15 @@ class Crypto
 
   def ciphertext
     @no_sym = plaintext.gsub(/\W/,'').downcase
-    no_sym_size = @no_sym.size
 
     return plaintext if plaintext.empty?
-    return @no_sym if no_sym_size == 1
 
     letters_count = @no_sym.size
 
     case letters_count
-    when 9
-      chars_each_slice(3).map(&:join).map(&:chars).transpose.map(&:join).join(' ')
-    when 8
+    when 1
+      @no_sym
+    when 8, 9
       arr = chars_each_slice(3)
       transposes(arr)
     when 54
