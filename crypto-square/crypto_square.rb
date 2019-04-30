@@ -1,3 +1,5 @@
+require 'byebug'
+
 class Crypto
 
   def initialize(plaintext)
@@ -8,11 +10,8 @@ class Crypto
     @no_sym = plaintext.gsub(/\W/,'').downcase
 
     return plaintext if plaintext.empty?
+    return @no_sym if @no_sym.size == 1
 
-    @no_sym.size == 1 ? @no_sym : not_equal_one
-  end
-
-  def not_equal_one
     arr = chars_each_slice(rectangle_size - 1)
     transposes(arr)
   end
@@ -34,6 +33,6 @@ class Crypto
     Math.sqrt(@plaintext.length).ceil
   end
 
-  protected
+  private
   attr_reader :plaintext
 end
